@@ -121,20 +121,9 @@ def handle_output(line):
     func = OUTPUT_SIGNATURES.get(line[:2], DEFAULT_OUTPUT)
     return line.decode()[0], func(line[2:])
 
-def start(host, port):
-    port = int(port)
-    print('Connecting to %s:%s' % (host, port))
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((host, port))
-    s.settimeout(2)
-    got = b''
+def start(raw_data):
     out = defaultdict(list)
-    while True:
-        try:
-            got += s.recv(100000)
-        except socket.timeout:
-            break
-    for line in got.split(b'\r\n'):
+    for line in raw_data.split(b'\r\n'):
         key, value = handle_output(line)
         if not key:
             continue
