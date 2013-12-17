@@ -120,7 +120,7 @@ def handle_output(line):
     func = OUTPUT_SIGNATURES.get(line[:2], DEFAULT_OUTPUT)
     return func(line[2:])
 
-def main(host, port):
+def start(host, port):
     port = int(port)
     print('Connecting to %s:%s' % (host, port))
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -135,10 +135,7 @@ def main(host, port):
     for line in got.split(b'\r\n'):
         handle_output(line)
 
-
 if __name__ == '__main__':
-
-    main(sys.argv[1], sys.argv[2])
 
     assert handle_output_H(
         b'JEQ0543545,03f6c9,0113,00000000,2663651e,00,32,0d0c0f,000c,03,0000\r\n',
