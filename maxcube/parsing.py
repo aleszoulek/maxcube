@@ -1,9 +1,10 @@
-import sys
 import socket
 import base64
 import binascii
 from pprint import pprint
 from io import BytesIO
+from collections import defaultdict
+
 
 def handle_output_H(line):
     serial, rf_address, firmware_version, *_ = line.decode().strip().split(',')
@@ -116,9 +117,9 @@ DEFAULT_OUTPUT = handle_output_default
 
 def handle_output(line):
     if not line:
-        return
+        return None, None
     func = OUTPUT_SIGNATURES.get(line[:2], DEFAULT_OUTPUT)
-    return func(line[2:])
+    return line.decode()[0], func(line[2:])
 
 def start(host, port):
     port = int(port)
@@ -127,11 +128,16 @@ def start(host, port):
     s.connect((host, port))
     s.settimeout(2)
     got = b''
+    out = defaultdict(list)
     while True:
         try:
             got += s.recv(100000)
         except socket.timeout:
             break
     for line in got.split(b'\r\n'):
-        handle_output(line)
+        key, value = handle_output(line)
+        if not key:
+            continue
+        out[key].append(value)
+    return out
 
