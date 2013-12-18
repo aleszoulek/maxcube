@@ -5,13 +5,12 @@ import sys
 from maxcube import parsing
 from maxcube import output
 from maxcube import network
-
+from maxcube import objects
 
 def main():
     raw_data = network.read_raw_data(sys.argv[1], int(sys.argv[2]))
-    output.display(
-        parsing.start(raw_data)
-    )
+    cube = objects.from_parsed_data(parsing.start(raw_data))
+    output.display(cube)
 
 
 if __name__ == '__main__':
