@@ -48,12 +48,16 @@ class Device(object):
         return cls(address=data['rf_address'], serial=data['serial'], room_id=data['room_id'], name=data['name'])
 
 
-class Valve(object):
+class Valve(Device):
     type_code = 2
 
 
-class Switch(object):
+class Switch(Device):
     type_code = 5
+
+
+class WindowSensor(Device):
+    type_code = 4
 
 
 def from_parsed_data(data):
